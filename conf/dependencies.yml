@@ -1,0 +1,5 @@
+self: play -> restcrud 0.1
+
+require:
+    - play
+    - com.squareup.moshi -> moshi 1.1.0

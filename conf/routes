@@ -1,0 +1,13 @@
+# This file defines all module routes (Higher priority routes first)
+#
+# import these routes in the main app as :
+# *     /                       module:restcrud
+#
+# ~~~~
+
+GET     /?              		        RestCrud.index
+GET     /{model} 				        RestCrud.list
+POST    /{model}				        RestCrud.create
+GET     /{model}/{id}			        RestCrud.get
+PUT     /{model}/{id}			        RestCrud.update
+DELETE  /{model}/{id}			        RestCrud.delete
