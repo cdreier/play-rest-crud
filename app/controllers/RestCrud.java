@@ -41,11 +41,13 @@ public class RestCrud extends Controller {
 
 	public static void get(String model, String id) throws Exception {
         play.db.Model byId = findModelById(model, id);
+        notFoundIfNull(byId);
         renderJSON(byId);
 	}
 
 	public static void update(String model, String id, String body) throws Exception{
 		play.db.Model byId = findModelById(model, id);
+		notFoundIfNull(byId);
 		
 		Model fromJson = getModelFromJson(model, body);
 		
@@ -68,6 +70,7 @@ public class RestCrud extends Controller {
 
 	public static void delete(String model, String id) throws Exception{
 		play.db.Model byId = findModelById(model, id);
+		notFoundIfNull(byId);
 		byId._delete();
 		ok();
 	}
