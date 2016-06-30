@@ -13,9 +13,20 @@ PUT     /{modelName}/{id}   -> update model with given id
 DELETE  /{modelName}/{id}   -> delete model with given id
 ```
 
-## warning
+to keep things simple, i decided to set a few conventions:
 
-in this first version, there is not security concept - every model can be accessed after the routes are active!
+* please create a new package: controllers.api
+* every model should be managed by a concrete controller, named with a Api suffix
+    * example:
+    * model name: Message
+    * controller name: MessageApi
+* the api controller must extend the RestCrud class
+
+
+### security n stuff
+
+to extend and secure the crud logic easily, i'm using non static controller actions, so you can just overwrite the actions, extend them with custom logic or put some additional secure annotations on it.
+
 
 ## installation
 

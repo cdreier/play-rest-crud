@@ -1,6 +1,10 @@
 package controllers;
 
 import java.io.IOException;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.List;
 
@@ -14,21 +18,22 @@ import play.db.jpa.Model;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
+import play.utils.Java;
 
 public class RestCrud extends Controller {
 	
 	private static Moshi moshi;
 	
-	public static void index() {
-		renderText("yooo");
+	public void index() {
+		renderText("RestCrud Play Module");
 	}
 
-	public static void list(String model) {
+	public void list(String model) {
 		List<play.db.Model> entityList = getEntityList(model);
 		renderJSON(entityList);
 	}
 	
-	public static void create(String model, String body) throws IOException{
+	public void create(String model, String body) throws IOException{
 		Model fromJson = getModelFromJson(model, body);
 		validation.valid(fromJson);
 		if (validation.hasErrors()) {
@@ -39,13 +44,13 @@ public class RestCrud extends Controller {
 		renderJSON(fromJson);
 	}
 
-	public static void get(String model, String id) throws Exception {
+	public void get(String model, String id) throws Exception {
         play.db.Model byId = findModelById(model, id);
         notFoundIfNull(byId);
         renderJSON(byId);
 	}
 
-	public static void update(String model, String id, String body) throws Exception{
+	public void update(String model, String id, String body) throws Exception{
 		play.db.Model byId = findModelById(model, id);
 		notFoundIfNull(byId);
 		
@@ -68,7 +73,7 @@ public class RestCrud extends Controller {
 		renderJSON(byId);
 	}
 
-	public static void delete(String model, String id) throws Exception{
+	public void delete(String model, String id) throws Exception{
 		play.db.Model byId = findModelById(model, id);
 		notFoundIfNull(byId);
 		byId._delete();
@@ -80,19 +85,19 @@ public class RestCrud extends Controller {
 	
 	
 	
-	private static play.db.Model findModelById(String model, String id) throws Exception{
+	protected play.db.Model findModelById(String model, String id) throws Exception{
 		Class<? extends Model> modelClass = getModelClass(model);
 		Factory factory =  Model.Manager.factoryFor(modelClass);
         Object boundId = Binder.directBind(id, factory.keyType());
         return factory.findById(boundId);
 	}
 	
-	private static Model getModelFromJson(String model, String body) throws IOException {
+	protected Model getModelFromJson(String model, String body) throws IOException {
 		JsonAdapter<? extends Model> adapter = getMoshiAdapter(model);
 		return adapter.fromJson(body);
 	}
 	
-	private static JsonAdapter<? extends Model> getMoshiAdapter(String model){
+	protected JsonAdapter<? extends Model> getMoshiAdapter(String model){
 		if(moshi == null){
 			moshi = new Moshi.Builder().build();
 		}
@@ -100,19 +105,20 @@ public class RestCrud extends Controller {
 		return moshi.adapter(modelClass);
 	}
 	
-	private static List<play.db.Model> getEntityList(String model){
+	protected List<play.db.Model> getEntityList(String model){
 		Class<? extends Model> modelClass = getModelClass(model);
 		Factory factory = Model.Manager.factoryFor(modelClass);
 		Long count = factory.count(null, null, null);
 		return factory.fetch(0, count.intValue(), null, null, null, null, null);
 	}
 	
-	private static Class<? extends Model> getModelClass(String model) {
+	protected Class<? extends Model> getModelClass(String model) {
 		try {
 			String fullModelName = "models." + model;
 			Class<? extends Model> modelClass = (Class<? extends Model>) Play.classloader
 					.loadClass(fullModelName);
-
+			
+			notFoundIfNull(modelClass);
 			return modelClass;
 
 		} catch (ClassNotFoundException e) {

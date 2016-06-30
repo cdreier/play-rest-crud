@@ -5,9 +5,9 @@
 #
 # ~~~~
 
-GET     /?              		        RestCrud.index
-GET     /{model} 				        RestCrud.list
-POST    /{model}				        RestCrud.create
-GET     /{model}/{id}			        RestCrud.get
-PUT     /{model}/{id}			        RestCrud.update
-DELETE  /{model}/{id}			        RestCrud.delete
+GET     /?              		        RestCrudHandler.index
+GET     /{model} 				        RestCrudHandler.list
+POST    /{model}				        RestCrudHandler.create
+GET     /{model}/{id}			        RestCrudHandler.get
+PUT     /{model}/{id}			        RestCrudHandler.update
+DELETE  /{model}/{id}			        RestCrudHandler.delete
